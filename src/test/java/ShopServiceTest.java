@@ -9,14 +9,18 @@ class ShopServiceTest {
     @Test
     void addOrderTest() {
         //GIVEN
-        ShopService shopService = new ShopService();
+        ProductRepo productRepo = new ProductRepo();
+        productRepo.addProduct(new Product("1","Apfel"));
+
+        ShopService shopService = new ShopService(productRepo, new OrderMapRepo());
+
         List<String> productsIds = List.of("1");
 
         //WHEN
         Order actual = shopService.addOrder(productsIds);
 
         //THEN
-        Order expected = new Order("-1", List.of(new Product("1", "Apfel")));
+        Order expected = new Order("-1", List.of(new Product("1", "Apfel")), OrderStatus.IN_DELIVERY);
         assertEquals(expected.products(), actual.products());
         assertNotNull(expected.id());
     }

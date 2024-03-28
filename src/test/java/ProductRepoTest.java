@@ -25,7 +25,7 @@ class ProductRepoTest {
     void getProductById() {
         //GIVEN
         ProductRepo repo = new ProductRepo();
-
+        repo.addProduct(new Product("1","Apfel"));
         //WHEN
         Product actual = repo.getProductById("1");
 
