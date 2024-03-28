@@ -1,62 +1,51 @@
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.With;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.time.ZonedDateTime;
+import java.util.*;
+
+
 
 @With
 
+public record ShopService() {
+    static ProductRepo productRepo = new ProductRepo();
+    static OrderRepo orderRepo = new OrderMapRepo();
 
-public class ShopService {
-    private ProductRepo productRepo = new ProductRepo();
-    private OrderRepo orderRepo = new OrderMapRepo();
 
-    public ShopService(ProductRepo productRepo, OrderRepo orderRepo) {
-        this.productRepo = productRepo;
-        this.orderRepo = orderRepo;
-    }
-    public ShopService() {}
-
-    public Order addOrder(List<String> productIds) throws NoSuchElementException {
+    public Order addOrder(List<String> productIds) throws ProductNotFoundException {
         List<Product> products = new ArrayList<>();
-
-
-
         for (String productId : productIds) {
-            Product productToOrder = productRepo.getProductById(productId);
-            if (productToOrder == null) {
-                System.out.println("Product mit der Id: " + productId + " konnte nicht bestellt werden!");
-                throw new NoSuchElementException(productId);
-            }
-            products.add(productToOrder);
+            products.add(productRepo.getProductById(productId)
+                    .orElseThrow(() -> new ProductNotFoundException("Product with ID " + productId + " not found in ProductRepo")));
+
         }
-
-        Order newOrder = new Order(UUID.randomUUID().toString(), products,OrderStatus.IN_DELIVERY);
-
+        Order newOrder = new Order(UUID.randomUUID().toString(), products, OrderStatus.PROCESSING, ZonedDateTime.now());
         return orderRepo.addOrder(newOrder);
     }
 
-    public List<Order> findOrderByStatus(OrderStatus status) {
-        List<Order> orderWithSameStatus = new ArrayList<>();
-        orderWithSameStatus = orderRepo.getOrders()
-                .stream()
-                .filter(order -> order.status() == status)
-                .collect(Collectors.toList());
+    public List<Order> getOrdersWithStatus(OrderStatus status) {
+        return orderRepo.getOrders().stream()
+                .filter(order -> order.getStatus().equals(status))
+                .toList();
+    }
 
-        return orderWithSameStatus;
+    public void updateOrder(String orderID, OrderStatus newStatus) {
+        Order updatedOrder = orderRepo.getOrderById(orderID).withStatus(newStatus);
+        orderRepo.removeOrder(orderID);
+        orderRepo.addOrder(updatedOrder);
+    }
 
+    public void setOrderRepo(OrderMapRepo orderMapRepo) {
 
     }
 
-    public Order updateOrder(String orderId) {
-        Order order1 = orderRepo.getOrderById(orderId).withStatus(OrderStatus.IN_DELIVERY);
-        orderRepo.removeOrder(orderId);
-        return orderRepo.addOrder(order1);
-
-
+    public Map<Object, Object> getOrders() {
+        return null;
     }
 
+    public OrderRepo orderRepo() {
+        return null;
+    }
 }

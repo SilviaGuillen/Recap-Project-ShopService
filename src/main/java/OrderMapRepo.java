@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 public class OrderMapRepo implements OrderRepo{
-    private Map<String, Order> orders = new HashMap<>();
+    public Map<String, Order> orders = new HashMap<>();
 
     @Override
     public List<Order> getOrders() {
+
         return new ArrayList<>(orders.values());
     }
 
     @Override
     public Order getOrderById(String id) {
+
         return orders.get(id);
     }
 
@@ -24,6 +26,7 @@ public class OrderMapRepo implements OrderRepo{
 
     @Override
     public void removeOrder(String id) {
+
         orders.remove(id);
     }
 }

@@ -1,4 +1,4 @@
-import lombok.With;
+
 
 
 
@@ -11,12 +11,7 @@ public enum OrderStatus {
     OrderStatus(String a){
         abkürzung = a;
     }
-    public String getAbkürzung(){
-        return abkürzung;
-    }
-    public void setAbkürzung(String a){
-        this.abkürzung = a;
-    }
+
 
 
 }
