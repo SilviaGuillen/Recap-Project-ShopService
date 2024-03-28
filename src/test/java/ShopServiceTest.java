@@ -28,7 +28,11 @@ class ShopServiceTest {
     @Test
     void addOrderTest_whenInvalidProductId_expectNull() {
         //GIVEN
-        ShopService shopService = new ShopService();
+
+        OrderMapRepo orderMapRepo = new OrderMapRepo();
+        ProductRepo productRepo = new ProductRepo();
+
+        ShopService shopService = new ShopService(productRepo,orderMapRepo);
         List<String> productsIds = List.of("1", "2");
 
         //WHEN

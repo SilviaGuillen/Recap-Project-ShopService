@@ -27,7 +27,7 @@ class ProductRepoTest {
         ProductRepo repo = new ProductRepo();
         repo.addProduct(new Product("1","Apfel"));
         //WHEN
-        Product actual = repo.getProductById("1");
+        Product actual = repo.getProductById("1").get();
 
         //THEN
         Product expected = new Product("1", "Apfel");

@@ -1,7 +1,14 @@
+import lombok.RequiredArgsConstructor;
+import lombok.With;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+@With
+
 
 public class ShopService {
     private ProductRepo productRepo = new ProductRepo();
@@ -31,4 +38,25 @@ public class ShopService {
 
         return orderRepo.addOrder(newOrder);
     }
+
+    public List<Order> findOrderByStatus(OrderStatus status) {
+        List<Order> orderWithSameStatus = new ArrayList<>();
+        orderWithSameStatus = orderRepo.getOrders()
+                .stream()
+                .filter(order -> order.status() == status)
+                .collect(Collectors.toList());
+
+        return orderWithSameStatus;
+
+
+    }
+
+    public Order updateOrder(String orderId) {
+        Order order1 = orderRepo.getOrderById(orderId).withStatus(OrderStatus.IN_DELIVERY);
+        orderRepo.removeOrder(orderId);
+        return orderRepo.addOrder(order1);
+
+
+    }
+
 }
